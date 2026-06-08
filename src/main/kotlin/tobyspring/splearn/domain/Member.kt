@@ -1,11 +1,14 @@
 package tobyspring.splearn.domain
 
+/**
+ * 단계적으로 도메인에서 응집도 있게 접근해 나가야 좋다. 유지보수에
+ */
 class Member private constructor(
-    email: String,
+    email: Email,
     nickname: String,
     passwordHash: String,
 ) {
-    var email: String = email
+    var email: Email = email
         private set
 
     var nickname: String = nickname
@@ -46,8 +49,13 @@ class Member private constructor(
          * 정적 팩토리 메소드의 장점
          */
         fun create(
-            email: String, nickname: String, password: String, passwordEncoder: PasswordEncoder
-        ): Member =
-            Member(email, nickname, passwordEncoder.encode(password))
+            createRequest: MemberCreateRequest, passwordEncoder: PasswordEncoder
+        ): Member {
+            with(createRequest) {
+                return Member(Email(email), nickname, passwordEncoder.encode(password))
+            }
+        }
+
+
     }
 }
