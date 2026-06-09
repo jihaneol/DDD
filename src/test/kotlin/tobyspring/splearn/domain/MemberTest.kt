@@ -6,31 +6,24 @@ import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
+import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegister
+import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
 
 class MemberTest {
 
     lateinit var member: Member
     val passwordEncoder: PasswordEncoder =
-        object : PasswordEncoder {
-            override fun encode(password: String): String {
-                return password.uppercase()
-            }
+        createPasswordEncoder()
 
-            override fun matches(password: String, passwordHash: String): Boolean {
-                return encode(password).equals(passwordHash)
-            }
-        }
 
     @BeforeEach
     fun setUp() {
         member = Member.register(
-            MemberRegisterRequest(
-                "toby@naver.com", "toby",
-                "secret"
-            ),
+            createMemberRegister("test1@naver.com"),
             passwordEncoder
         )
     }
+
 
     @Test
     fun createMember() {
@@ -57,14 +50,13 @@ class MemberTest {
 
     @Test
     fun deactivatedFail() {
-
         assertThrows<IllegalStateException> { member.deactive() }
     }
 
     @Test
     fun verifyPassword() {
-        assertTrue { member.verifyPassword("secret", passwordEncoder) }
-        assertFalse { member.verifyPassword("sdfkj", passwordEncoder) }
+        assertTrue { member.verifyPassword("password", passwordEncoder) }
+        assertFalse { member.verifyPassword("wrongPassword", passwordEncoder) }
 
     }
 
@@ -72,21 +64,14 @@ class MemberTest {
     fun isInvalidEmail() {
         assertThrows<IllegalArgumentException> {
             Member.register(
-                MemberRegisterRequest(
-                    "asdkjf",
-                    "haneol",
-                    "ksdjf"
-                ), passwordEncoder
+                createMemberRegister("test"), passwordEncoder
             )
         }
         Member.register(
-            MemberRegisterRequest(
-                "234@naver.com",
-                "haneol",
-                "ksdjf"
-            ), passwordEncoder
+            createMemberRegister("test1@naver.com"), passwordEncoder
         )
     }
+
 
     @Test
     fun changePassword() {

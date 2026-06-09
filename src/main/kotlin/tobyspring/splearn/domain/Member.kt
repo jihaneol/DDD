@@ -1,24 +1,36 @@
 package tobyspring.splearn.domain
 
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+
 /**
  * 단계적으로 도메인에서 응집도 있게 접근해 나가야 좋다. 유지보수에
  */
-class Member private constructor(
+@Entity
+class Member(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0L,
     email: Email,
     nickname: String,
     passwordHash: String,
 ) {
     var email: Email = email
-        private set
+        protected set
 
     var nickname: String = nickname
-        private set
+        protected set
 
     var passwordHash: String = passwordHash
-        private set
+        protected set
 
+    @Enumerated(EnumType.STRING)
     var status: MemberStatus = MemberStatus.PENDING
-        private set
+        protected set
 
     fun active() {
         check(status == MemberStatus.PENDING) { "Pending 상태가 아닙니다." }
@@ -52,7 +64,11 @@ class Member private constructor(
             createRequest: MemberRegisterRequest, passwordEncoder: PasswordEncoder
         ): Member {
             with(createRequest) {
-                return Member(Email(email), nickname, passwordEncoder.encode(password))
+                return Member(
+                    email = Email(email),
+                    nickname = nickname,
+                    passwordHash = passwordEncoder.encode(password)
+                )
             }
         }
 

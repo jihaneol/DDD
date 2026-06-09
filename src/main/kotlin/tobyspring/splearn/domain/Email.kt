@@ -1,5 +1,8 @@
 package tobyspring.splearn.domain
 
+/**
+ * JvmInline으로 객체를 생성하지 않고 값으로 취급해서 성능 최적화가 된다.
+ */
 @JvmInline
 value class Email(val value: String) {
     init {
