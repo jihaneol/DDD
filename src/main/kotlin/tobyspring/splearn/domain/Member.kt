@@ -48,8 +48,8 @@ class Member private constructor(
         /**
          * 정적 팩토리 메소드의 장점
          */
-        fun create(
-            createRequest: MemberCreateRequest, passwordEncoder: PasswordEncoder
+        fun register(
+            createRequest: MemberRegisterRequest, passwordEncoder: PasswordEncoder
         ): Member {
             with(createRequest) {
                 return Member(Email(email), nickname, passwordEncoder.encode(password))

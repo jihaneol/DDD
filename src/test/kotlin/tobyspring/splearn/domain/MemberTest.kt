@@ -23,8 +23,8 @@ class MemberTest {
 
     @BeforeEach
     fun setUp() {
-        member = Member.create(
-            MemberCreateRequest(
+        member = Member.register(
+            MemberRegisterRequest(
                 "toby@naver.com", "toby",
                 "secret"
             ),
@@ -71,16 +71,16 @@ class MemberTest {
     @Test
     fun isInvalidEmail() {
         assertThrows<IllegalArgumentException> {
-            Member.create(
-                MemberCreateRequest(
+            Member.register(
+                MemberRegisterRequest(
                     "asdkjf",
                     "haneol",
                     "ksdjf"
                 ), passwordEncoder
             )
         }
-        Member.create(
-            MemberCreateRequest(
+        Member.register(
+            MemberRegisterRequest(
                 "234@naver.com",
                 "haneol",
                 "ksdjf"
