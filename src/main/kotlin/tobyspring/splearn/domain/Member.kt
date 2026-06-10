@@ -6,11 +6,14 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.hibernate.annotations.NaturalId
+import org.hibernate.annotations.NaturalIdCache
 
 /**
  * 단계적으로 도메인에서 응집도 있게 접근해 나가야 좋다. 유지보수에
  */
 @Entity
+@NaturalIdCache
 class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +22,12 @@ class Member(
     nickname: String,
     passwordHash: String,
 ) {
+    /**
+     * 영속성 컨텍스트에서 찾아서 성능 개선
+     * db unique와 같은 효과
+     * 하이버네이트에서 제공
+     */
+    @NaturalId
     var email: Email = email
         protected set
 
