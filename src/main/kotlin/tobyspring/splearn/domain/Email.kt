@@ -1,10 +1,17 @@
 package tobyspring.splearn.domain
 
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
+
 /**
  * JvmInline으로 객체를 생성하지 않고 값으로 취급해서 성능 최적화가 된다.
+ * value를 사용하기 힘들어서 안한다.
  */
-@JvmInline
-value class Email(val value: String) {
+@Embeddable
+data class Email(
+    @Column(name = "email", nullable = false)
+    val value: String
+) {
     init {
         require(EMAIL_REGEX.matches(value)) {
             "유효하지 않은 이메일 형식입니다: $value"

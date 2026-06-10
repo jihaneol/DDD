@@ -1,5 +1,6 @@
 package tobyspring.splearn.domain
 
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -27,6 +28,7 @@ class Member(
      * db unique와 같은 효과
      * 하이버네이트에서 제공
      */
+    @Embedded
     @NaturalId
     var email: Email = email
         protected set
