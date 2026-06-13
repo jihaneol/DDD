@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.Transactional
 import tobyspring.splearn.SplearnTestConfiguration
 import tobyspring.splearn.domain.MemberFixture
+import tobyspring.splearn.domain.MemberRegisterRequest
 
 @SpringBootTest
 @Import(SplearnTestConfiguration::class)
@@ -27,5 +28,13 @@ class MemberRegisterTest(
         memberRegister.register(MemberFixture.createMemberRegister())
 
         assertThrows<DuplicateEmailException> { memberRegister.register(MemberFixture.createMemberRegister()) }
+    }
+
+    @Test
+    fun memberRegisterRequestFail() {
+        val invalid = MemberRegisterRequest("todbyna.ap", "han", "secret")
+
+        memberRegister.register(invalid)
+        
     }
 }
