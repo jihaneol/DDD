@@ -10,7 +10,7 @@ class MemberRegisterRequest(
     val email: String,
 
     @field:NotBlank
-    @field:Size(min = 2, max = 20)
+    @field:Size(min = 5, max = 20)
     val nickname: String,
 
     @field:NotBlank

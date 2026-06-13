@@ -1,7 +1,7 @@
 package tobyspring.splearn.domain
 
 import kotlin.test.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class EmailTest {
 

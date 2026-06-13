@@ -7,6 +7,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.springframework.test.util.ReflectionTestUtils
+import tobyspring.splearn.application.MemberModifyService
 import tobyspring.splearn.application.required.EmailSender
 import tobyspring.splearn.application.required.MemberRepository
 import tobyspring.splearn.domain.Email
@@ -24,10 +25,11 @@ import tobyspring.splearn.domain.MemberStatus
 class MemberRegisterManualTest {
     @Test
     fun registerTestStub() {
-        val register: MemberRegister = MemberService(
+        val register: MemberRegister = MemberModifyService(
             memberRepository = MemberRepositoryStub(),
             emailSender = EmailSenderStub(),
-            passwordEncoder = MemberFixture.createPasswordEncoder()
+            passwordEncoder = MemberFixture.createPasswordEncoder(),
+            memberFinder = MemberFinderStub()
         )
 
         val member = register.register(MemberFixture.createMemberRegister())
@@ -40,10 +42,11 @@ class MemberRegisterManualTest {
     fun registerTestMock() {
         val emailSenderMock = EmailSenderMock()
 
-        val register: MemberRegister = MemberService(
+        val register: MemberRegister = MemberModifyService(
             memberRepository = MemberRepositoryStub(),
             emailSender = emailSenderMock,
-            passwordEncoder = MemberFixture.createPasswordEncoder()
+            passwordEncoder = MemberFixture.createPasswordEncoder(),
+            memberFinder = MemberFinderStub()
         )
 
         val member = register.register(MemberFixture.createMemberRegister())
@@ -65,8 +68,10 @@ class MemberRegisterManualTest {
     @Test
     fun registerTestMockito() {
         val emailSenderMock = mock<EmailSender>()
+        val memberFinderMock = mock<MemberFinder>()
 
-        val register: MemberRegister = MemberService(
+        val register: MemberRegister = MemberModifyService(
+            memberFinder = memberFinderMock,
             memberRepository = MemberRepositoryStub(),
             emailSender = emailSenderMock,
             passwordEncoder = MemberFixture.createPasswordEncoder()
@@ -83,6 +88,14 @@ class MemberRegisterManualTest {
             any()
         )
     }
+    class MemberFinderStub : MemberFinder {
+        override fun find(memberId: Long): Member {
+           return Member.register(
+               MemberFixture.createMemberRegister(),
+               MemberFixture.createPasswordEncoder()
+           )
+        }
+    }
 
     class MemberRepositoryStub : MemberRepository {
         override fun save(member: Member): Member {
@@ -91,6 +104,10 @@ class MemberRegisterManualTest {
         }
 
         override fun findByEmail(email: Email): Member? {
+            return null
+        }
+
+        override fun findById(memberId: Long): Member? {
             return null
         }
     }

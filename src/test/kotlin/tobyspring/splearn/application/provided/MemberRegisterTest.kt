@@ -1,5 +1,7 @@
 package tobyspring.splearn.application.provided
 
+import jakarta.persistence.EntityManager
+import jakarta.validation.ConstraintViolationException
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import org.junit.jupiter.api.assertThrows
@@ -14,7 +16,8 @@ import tobyspring.splearn.domain.MemberRegisterRequest
 @Import(SplearnTestConfiguration::class)
 @Transactional
 class MemberRegisterTest(
-    private val memberRegister: MemberRegister
+    private val memberRegister: MemberRegister,
+    private val entityManager: EntityManager,
 ) {
     @Test
     fun register() {
@@ -31,10 +34,23 @@ class MemberRegisterTest(
     }
 
     @Test
-    fun memberRegisterRequestFail() {
-        val invalid = MemberRegisterRequest("todbyna.ap", "han", "secret")
+    fun activate() {
+        var member = memberRegister.register(MemberFixture.createMemberRegister())
+        entityManager.flush()
+        entityManager.clear()
 
-        memberRegister.register(invalid)
-        
+        member = memberRegister.activate(member.id)
+        entityManager.flush()
+
+        assertNotNull(member)
+    }
+
+    @Test
+    fun memberRegisterRequestFail() {
+        val invalid = MemberRegisterRequest("toby@naver.com", "haeo", "secret")
+
+        assertThrows<ConstraintViolationException> {
+            memberRegister.register(invalid)
+        }
     }
 }

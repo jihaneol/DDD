@@ -50,6 +50,6 @@ class MemberRepositoryTest {
         )
 
 
-        assertThrows<DataIntegrityViolationException> {  memberRepository.save(member2)}
+        assertThrows<DataIntegrityViolationException> { memberRepository.save(member2) }
     }
 }
