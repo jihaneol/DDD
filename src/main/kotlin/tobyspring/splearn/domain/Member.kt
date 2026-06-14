@@ -4,9 +4,6 @@ import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
 import org.hibernate.annotations.NaturalId
 import org.hibernate.annotations.NaturalIdCache
 
@@ -16,13 +13,10 @@ import org.hibernate.annotations.NaturalIdCache
 @Entity
 @NaturalIdCache
 class Member(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L,
     email: Email,
     nickname: String,
     passwordHash: String,
-) {
+) : AbstractEntity() {
     /**
      * 영속성 컨텍스트에서 찾아서 성능 개선
      * db unique와 같은 효과
@@ -82,7 +76,5 @@ class Member(
                 )
             }
         }
-
-
     }
 }
