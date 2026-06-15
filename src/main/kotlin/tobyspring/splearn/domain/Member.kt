@@ -1,9 +1,11 @@
 package tobyspring.splearn.domain
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.NaturalId
 import org.hibernate.annotations.NaturalIdCache
 
@@ -16,6 +18,7 @@ class Member(
     email: Email,
     nickname: String,
     passwordHash: String,
+    detail: MemberDetail,
 ) : AbstractEntity() {
     /**
      * 영속성 컨텍스트에서 찾아서 성능 개선
@@ -35,6 +38,10 @@ class Member(
 
     @Enumerated(EnumType.STRING)
     var status: MemberStatus = MemberStatus.PENDING
+        protected set
+
+    @OneToOne(cascade = [(CascadeType.ALL)])
+    var detail: MemberDetail = detail
         protected set
 
     fun active() {
@@ -72,7 +79,8 @@ class Member(
                 return Member(
                     email = Email(email),
                     nickname = nickname,
-                    passwordHash = passwordEncoder.encode(password)
+                    passwordHash = passwordEncoder.encode(password),
+                    detail = TODO(),
                 )
             }
         }
