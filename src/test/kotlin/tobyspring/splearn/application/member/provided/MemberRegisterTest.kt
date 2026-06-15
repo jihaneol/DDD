@@ -1,4 +1,4 @@
-package tobyspring.splearn.application.provided
+package tobyspring.splearn.application.member.provided
 
 import jakarta.persistence.EntityManager
 import jakarta.validation.ConstraintViolationException
@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.Transactional
 import tobyspring.splearn.SplearnTestConfiguration
-import tobyspring.splearn.domain.MemberFixture
-import tobyspring.splearn.domain.MemberRegisterRequest
+import tobyspring.splearn.domain.member.MemberFixture
+import tobyspring.splearn.domain.member.MemberRegisterRequest
 
 @SpringBootTest
 @Import(SplearnTestConfiguration::class)
@@ -24,6 +24,7 @@ class MemberRegisterTest(
         val member = memberRegister.register(MemberFixture.createMemberRegister())
 
         assertNotNull(member.id)
+        assertNotNull(member.detail)
     }
 
     @Test

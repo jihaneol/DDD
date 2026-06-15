@@ -1,25 +1,24 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.member
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
-import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegister
-import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
 
 class MemberTest {
-
+    
     lateinit var member: Member
     val passwordEncoder: PasswordEncoder =
-        createPasswordEncoder()
+        MemberFixture.Companion.createPasswordEncoder()
 
 
     @BeforeEach
     fun setUp() {
         member = Member.register(
-            createMemberRegister("test1@naver.com"),
+            MemberFixture.Companion.createMemberRegister("test1@naver.com"),
             passwordEncoder
         )
     }
@@ -34,8 +33,10 @@ class MemberTest {
 
     @Test
     fun active() {
+        assertThat(member.detail.activatedAt).isNull()
         member.active()
         assertThat(member.status).isEqualTo(MemberStatus.ACTIVE)
+        assertThat(member.detail.activatedAt).isNotNull()
     }
 
     @Test
@@ -46,6 +47,8 @@ class MemberTest {
 
         assertThrows<IllegalStateException> { member.deactive() }
         assertThat(member.status).isEqualTo(MemberStatus.DEACTIVATED)
+        assertThat(member.detail.deactivatedAt).isNotNull()
+
     }
 
     @Test
@@ -64,14 +67,24 @@ class MemberTest {
     fun isInvalidEmail() {
         assertThrows<IllegalArgumentException> {
             Member.register(
-                createMemberRegister("test"), passwordEncoder
+                MemberFixture.Companion.createMemberRegister("test"), passwordEncoder
             )
         }
         Member.register(
-            createMemberRegister("test1@naver.com"), passwordEncoder
+            MemberFixture.Companion.createMemberRegister("test1@naver.com"), passwordEncoder
         )
     }
 
+    @Test
+    fun updateInfo() {
+        member.active()
+
+        val request = MemberUpdateInfoRequest("Leo", "toby", "자기소개")
+        member.updateInfo(request)
+
+        assertThat(member.nickname).isEqualTo(request.nickname)
+        assertEquals(member.detail.profile?.address, request.profileAddress)
+    }
 
     @Test
     fun changePassword() {

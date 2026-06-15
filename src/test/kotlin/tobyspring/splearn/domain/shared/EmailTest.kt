@@ -1,7 +1,7 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.shared
 
 import kotlin.test.Test
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 
 class EmailTest {
 
@@ -9,6 +9,6 @@ class EmailTest {
     fun equality() {
         val email1 = Email("tobyspring@naver.com")
         val email2 = Email("tobyspring@naver.com")
-        assertEquals(email1, email2)
+        Assertions.assertEquals(email1, email2)
     }
 }

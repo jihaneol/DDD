@@ -1,4 +1,4 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.shared
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable

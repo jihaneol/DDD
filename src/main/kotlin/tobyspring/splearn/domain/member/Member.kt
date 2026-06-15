@@ -1,20 +1,27 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.member
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.OneToOne
+import lombok.ToString
 import org.hibernate.annotations.NaturalId
 import org.hibernate.annotations.NaturalIdCache
+import tobyspring.splearn.domain.AbstractEntity
+import tobyspring.splearn.domain.shared.Email
 
 /**
  * 단계적으로 도메인에서 응집도 있게 접근해 나가야 좋다. 유지보수에
+ * memberDetail 과 함께 포함되는 멤버 에그리거트 루트
+ * 데이터 변경의 목적을 위해 하나의 단위로 취급되는 연관된 객체들의 클러스터
  */
 @Entity
+@ToString(callSuper = true, exclude = ["detail"])
 @NaturalIdCache
-class Member(
+class Member private constructor(
     email: Email,
     nickname: String,
     passwordHash: String,
@@ -40,7 +47,7 @@ class Member(
     var status: MemberStatus = MemberStatus.PENDING
         protected set
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
     var detail: MemberDetail = detail
         protected set
 
@@ -48,12 +55,20 @@ class Member(
         check(status == MemberStatus.PENDING) { "Pending 상태가 아닙니다." }
 
         status = MemberStatus.ACTIVE
+        detail.activateAt()
     }
 
     fun deactive() {
         check(status == MemberStatus.ACTIVE) { "Active 상태가 아닙니다." }
 
         status = MemberStatus.DEACTIVATED
+        detail.deactivate()
+    }
+
+    fun updateInfo(updateInfo: MemberUpdateInfoRequest) {
+        this.nickname = updateInfo.nickname
+
+        detail.updateInfo(updateInfo)
     }
 
     fun verifyPassword(password: String, passwordEncoder: PasswordEncoder): Boolean {
@@ -80,7 +95,7 @@ class Member(
                     email = Email(email),
                     nickname = nickname,
                     passwordHash = passwordEncoder.encode(password),
-                    detail = TODO(),
+                    detail = MemberDetail.create()
                 )
             }
         }
