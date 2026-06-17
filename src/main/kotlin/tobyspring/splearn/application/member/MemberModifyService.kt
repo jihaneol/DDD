@@ -9,6 +9,7 @@ import tobyspring.splearn.application.member.provided.MemberRegister
 import tobyspring.splearn.application.member.required.EmailSender
 import tobyspring.splearn.application.member.required.MemberRepository
 import tobyspring.splearn.domain.member.Member
+import tobyspring.splearn.domain.member.MemberInfoUpdateRequest
 import tobyspring.splearn.domain.member.MemberRegisterRequest
 import tobyspring.splearn.domain.member.PasswordEncoder
 import tobyspring.splearn.domain.shared.Email
@@ -53,5 +54,24 @@ class MemberModifyService(
         memberRepository.findByEmail(Email(registerRequest.email))?.let {
             throw DuplicateEmailException("이미 회원이 존재합니다.")
         }
+    }
+
+    override fun deactivate(memberId: Long): Member {
+        val member = memberFinder.find(memberId)
+
+        member.deactive()
+
+        return memberRepository.save(member)
+    }
+
+    override fun updateInfo(
+        memberId: Long,
+        memberInfoUpdateRequest: MemberInfoUpdateRequest
+    ): Member {
+        val member = memberFinder.find(memberId)
+
+        member.updateInfo(memberInfoUpdateRequest)
+
+        return memberRepository.save(member)
     }
 }

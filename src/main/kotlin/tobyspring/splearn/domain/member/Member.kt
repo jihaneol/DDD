@@ -65,7 +65,7 @@ class Member private constructor(
         detail.deactivate()
     }
 
-    fun updateInfo(updateInfo: MemberUpdateInfoRequest) {
+    fun updateInfo(updateInfo: MemberInfoUpdateRequest) {
         this.nickname = updateInfo.nickname
 
         detail.updateInfo(updateInfo)

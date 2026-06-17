@@ -79,7 +79,7 @@ class MemberTest {
     fun updateInfo() {
         member.active()
 
-        val request = MemberUpdateInfoRequest("Leo", "toby", "자기소개")
+        val request = MemberInfoUpdateRequest("Leo", "toby", "자기소개")
         member.updateInfo(request)
 
         assertThat(member.nickname).isEqualTo(request.nickname)

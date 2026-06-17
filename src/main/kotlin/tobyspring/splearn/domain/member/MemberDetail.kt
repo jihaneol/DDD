@@ -34,7 +34,7 @@ class MemberDetail() : AbstractEntity() {
         deactivatedAt = LocalDateTime.now()
     }
 
-    internal fun updateInfo(updateInfo: MemberUpdateInfoRequest) {
+    internal fun updateInfo(updateInfo: MemberInfoUpdateRequest) {
         this.profile = Profile(updateInfo.profileAddress)
         this.introduction = updateInfo.introduction
     }

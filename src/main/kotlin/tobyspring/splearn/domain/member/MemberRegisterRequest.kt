@@ -4,12 +4,11 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
-class MemberRegisterRequest(
+data class MemberRegisterRequest(
     @field:NotBlank
     @field:Email
     val email: String,
 
-    @field:NotBlank
     @field:Size(min = 5, max = 20)
     val nickname: String,
 
